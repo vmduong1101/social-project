@@ -1,0 +1,16 @@
+@import "/src/preflight.css";
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.mui-btn-loading {
+  background-color: #666666 !important;
+  color: #fff !important;
+}
