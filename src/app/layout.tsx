@@ -1,7 +1,11 @@
 'use client'
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import { ThemeProvider, createTheme } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
 import { SnackbarProvider } from "notistack";
+import React from "react";
+import { theme } from "../common/theme";
+import { AuthProvider } from "../context/auth-context";
+import MasterLayout from "../layout";
 import './globals.css';
 
 
@@ -15,86 +19,28 @@ export const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#242526',
-    },
-    secondary: {
-      main: '#0866ff',
-    },
-    action: {
-      active: '#0866ff'
-    },
-  },
-  components: {
-    MuiSvgIcon: {
-      styleOverrides: {
-        root: {
-          fontSize: '1.25rem',
-          fill: '#e4e6eb',
-        },
-      },
-    },
-    MuiIconButton: {
-      styleOverrides: {
-        root: {
-          color: '#e4e6eb',
-          background: '#3a3b3c',
-          ":hover": {
-            background: '#4f4f4f'
-          }
-        },
-      },
-    },
-    MuiTabs: {
-      styleOverrides: {
-        indicator: {
-          height: 3
-        }
-      }
-    },
-    MuiToolbar: {
-      styleOverrides: {
-        root: {
-          '@media (min-width: 600px)': {
-            minHeight: 56,
-          },
-        },
-      }
-
-    },
-    MuiCardContent: {
-      styleOverrides: {
-        root: {
-          padding: 0,
-          '&:last-child': {
-            paddingBottom: 0,
-          },
-        }
-      }
-    },
-  },
-});
-
-
-export default function RootLayout({
-  children,
-}: {
+type Props = {
   children: React.ReactNode
-}) {
+}
+
+
+const RootLayout = ({ children }: Props) => {
 
   return (
     <html lang="en">
       <body>
         <ThemeProvider theme={theme}>
           <ApolloProvider client={client}>
-            <SnackbarProvider>
-              {children}
-            </SnackbarProvider>
+            <AuthProvider>
+              <SnackbarProvider>
+                <MasterLayout />
+                {children}
+              </SnackbarProvider>
+            </AuthProvider>
           </ApolloProvider>
         </ThemeProvider>
       </body>
     </html>
   )
 }
+export default RootLayout

@@ -7,7 +7,7 @@ export const LOGIN = gql`
         message
         access_token
         data {
-            user_name
+            full_name
             email
             role
         }

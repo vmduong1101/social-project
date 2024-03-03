@@ -1,54 +1,50 @@
+'use client'
+import { isEmpty } from 'lodash'
 import { useRouter } from 'next/navigation'
-import React, { createContext, useContext, useEffect, useMemo } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 
 type Props = {
     children: React.ReactNode
 }
 
+export type CurrentUser = {
+    email?: string
+    full_name?: string
+    role?: string
+}
+
 export type AuthContext = {
-    user: any
-    login: (user: any) => void
-    logout: () => void
-    register: (user: any) => void
+    token: string | null
+    setToken: React.Dispatch<React.SetStateAction<string | null>>
+    currentUser: CurrentUser | {}
+    setCurrentUser: React.Dispatch<React.SetStateAction<CurrentUser | {}>>
 }
 
-const initAuth = {
-    user: null,
-    login: (user: any) => { },
-    logout: () => { },
-    register: (user: any) => { }
-}
+const ISSERVER = typeof window === "undefined"
 
-
-const ContextProvider = createContext(initAuth)
-
+const ContextProvider = createContext({ currentUser: {} } as AuthContext)
 const AuthProvider = ({ children }: Props) => {
-    const route = useRouter()
-    const token = localStorage.getItem('token')
+    const router = useRouter()
 
-    try {
-        if (!token) {
-            localStorage.removeItem('token')
-            route.push('/')
+    const userLocal = !ISSERVER ? JSON.parse(localStorage.getItem('social-user') || '{}') : {}
+    const tokenLocal = !ISSERVER ? localStorage.getItem('token') : ''
+
+    const [token, setToken] = useState(tokenLocal)
+    const [currentUser, setCurrentUser] = useState(userLocal as CurrentUser)
+
+
+    useEffect(() => {
+        if (!ISSERVER) {
+            const isValidAuth = !isEmpty(token) && !isEmpty(currentUser)
+            // debugger
+            if (!isValidAuth) {
+                router.replace('/login')
+            }
         }
-    } catch (error) {
-        throw new Error('Error in Auth Provider')
-    }
-
-
-    const auth = useMemo(() => {
-        return {
-            user: null,
-            login: (user: any) => { },
-            logout: () => { },
-            register: (user: any) => { }
-        }
-    }, [])
-
-    if (!token) return <div>Checking...</div>
+    }, [currentUser, token, router])
 
     return (
-        <ContextProvider.Provider value={auth}>
+        <ContextProvider.Provider value={{ token, setToken, currentUser, setCurrentUser }}>
             {children}
         </ContextProvider.Provider>
     )
@@ -57,3 +53,4 @@ const AuthProvider = ({ children }: Props) => {
 const useAuthContext = () => useContext(ContextProvider)
 
 export { AuthProvider, useAuthContext }
+

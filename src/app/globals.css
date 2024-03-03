@@ -9,7 +9,7 @@
   padding: 0;
   box-sizing: border-box;
 }
-
+/* Custom Loading */
 .mui-btn-loading {
   background-color: #666666 !important;
   color: #fff !important;
