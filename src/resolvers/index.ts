@@ -37,7 +37,15 @@ const resolvers = {
                 access_token: '',
                 data: null
             }
-       }
+       },
+        logout: async (parent: void, args: any, context: any, info: GraphQLResolveInfo) => {
+              return {
+                code: 200,
+                message: 'Logout success',
+                access_token: '',
+                data: null
+            }
+        }
     }
 };
 

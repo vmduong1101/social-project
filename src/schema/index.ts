@@ -18,12 +18,18 @@ type Query {
 
 type Mutation {
   login(arg: Arg): OutputLogin
+  logout(arg: ArgLogout): OutputLogin
 }
 
 input Arg {
   user_name: String!
   password: String!
 }
+
+input ArgLogout {
+  access_token: String
+}
+
 
 type OutputLogin {
   code: Int
