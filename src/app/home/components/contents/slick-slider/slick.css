@@ -17,15 +17,15 @@
 }
 
 .slick-arrow {
-    right: 20px;
+    right: 16px;
     z-index: 1;
 }
 
 .slick-prev {
-    left: 20px;
+    left: 16px;
     z-index: 1;
 }
 
 .slick-list {
-    padding: 10px 30px
+    padding: 10px 0px
 }

@@ -7,14 +7,19 @@ type Props = {}
 
 const Content = (props: Props) => {
     return (
-        <Grid container rowGap={6}>
-            <Grid item xs={12}>
+        <Grid
+            container
+            rowGap={6}
+            className=""
+            style={{ width: 590 }}
+        >
+            <Grid item xs={12} className='flex justify-center'>
                 <DynamicSlides />
             </Grid>
             <Grid item xs={12}>
                 <Card>
                     <CardContent>
-                        {Array(10).fill(0).map((_, index) => (
+                        {Array(20).fill(0).map((_, index) => (
                             <Grid item xs={12} key={index}>
                                 <div className='flex items-center'>
                                     <div>

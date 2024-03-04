@@ -16,7 +16,6 @@ export const theme = createTheme({
         MuiSvgIcon: {
             styleOverrides: {
                 root: {
-                    fontSize: '1.25rem',
                     fill: '#e4e6eb',
                 },
             },
@@ -47,17 +46,22 @@ export const theme = createTheme({
                     },
                 },
             }
-
+        },
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: '#242526',
+                    color: '#e4e6eb',
+                }
+            }
         },
         MuiCardContent: {
             styleOverrides: {
                 root: {
-                    padding: 0,
-                    '&:last-child': {
-                        paddingBottom: 0,
-                    },
+                    backgroundColor: '#242526',
+                    color: '#e4e6eb',
                 }
             }
         },
-    },
+    }
 });

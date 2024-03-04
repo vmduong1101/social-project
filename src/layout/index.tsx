@@ -11,6 +11,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../context/auth-context";
 import MenuPerson from "./menu";
+import StoreIcon from '@mui/icons-material/Store';
 
 const MasterLayout = () => {
     const [value, setValue] = useState(1);
@@ -27,7 +28,7 @@ const MasterLayout = () => {
     }
 
     return (
-        <AppBar position="static">
+        <AppBar position="sticky">
             <Toolbar>
                 <Grid container sx={{ flexGrow: 1 }}>
                     <Grid item xs={4} display={"flex"} justifyContent={"flex-start"}>
@@ -45,9 +46,9 @@ const MasterLayout = () => {
                                 aria-label="action tabs example"
                                 onChange={handleChangeTabs}
                             >
-                                <Tab label={<HomeRoundedIcon color="secondary" />} value={1} />
-                                <Tab label={<OndemandVideoRoundedIcon color="secondary" />} value={2} />
-                                <Tab label={<StorefrontRoundedIcon color="secondary" />} value={3} />
+                                <Tab label={<HomeRoundedIcon color="secondary" fontSize="large" />} value={1} />
+                                <Tab label={<OndemandVideoRoundedIcon color="secondary" fontSize="large" />} value={2} />
+                                <Tab label={<StoreIcon color="secondary" fontSize="large" />} value={3} />
                             </Tabs>
 
                         )}

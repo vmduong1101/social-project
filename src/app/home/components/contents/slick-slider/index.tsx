@@ -31,10 +31,11 @@ function DynamicSlides() {
         prevArrow: <SlickArrowLeft />,
         nextArrow: <SlickArrowRight />,
         useCSS: true,
+        rtl: false,
         lazyLoad: 'progressive' as LazyLoadTypes,
     };
     return (
-        <div className="slider-container">
+        <div className="slider-container w-full">
             <Slider {...settings}>
                 {slides.map(slide => {
                     return (
