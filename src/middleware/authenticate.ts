@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 const ADMIN_SECRET = process.env.ADMIN_SECRET || ''
 
 type AuthData = {
-    user_name: string,
+    email: string,
     role: string,
     iat: number,
     exp: number

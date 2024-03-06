@@ -16,9 +16,6 @@ const UserModel = sequelize.define('User', {
     full_name: {
       type: DataTypes.STRING
     },
-    user_name: {
-      type: DataTypes.STRING
-    },
     password: {
       type: DataTypes.STRING,
       allowNull: false
