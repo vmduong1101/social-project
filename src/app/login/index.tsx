@@ -1,31 +1,34 @@
-'use client'
-
-import { LOGIN } from '@/src/common/graphql/auth/mutations/mutation-login'
 import { useAuthContext } from '@/src/context/auth-context'
 import { useMutation } from '@apollo/client'
-import { Avatar, Box, Button, Card, CardContent, Divider, Grid, TextField } from '@mui/material'
+import { Box, Button, Grid, TextField } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import { useSnackbar } from 'notistack'
+import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { LOGIN } from './graphql/mutation/mutation-login'
+import RegisterAccount from './register'
 import './styles.css'
+import SwapHorizontalCircleIcon from '@mui/icons-material/SwapHorizontalCircle';
+import { LoadingButton } from '@mui/lab'
 
 type Props = {}
 
 interface FormInput {
-    userName: string
+    email: string
     password: any
 }
 
 const LoginPage = (props: Props) => {
+    const [active, setActive] = useState(false)
     const router = useRouter()
-    const [login] = useMutation(LOGIN);
+    const [login, { loading }] = useMutation(LOGIN);
     const { enqueueSnackbar } = useSnackbar();
-    const { register, handleSubmit } = useForm<FormInput>()
+    const { register, handleSubmit, formState: { errors } } = useForm<FormInput>()
     const { setCurrentUser, setToken } = useAuthContext()
 
     const onSubmit: SubmitHandler<FormInput> = (data) => login({
         variables: {
-            user_name: data.userName,
+            email: data.email,
             password: data.password
         },
         onCompleted(data) {
@@ -43,6 +46,10 @@ const LoginPage = (props: Props) => {
         },
     })
 
+    const handleToggle = () => {
+        setActive(!active)
+    }
+
     return (
         <Box
             position="relative"
@@ -55,88 +62,88 @@ const LoginPage = (props: Props) => {
                 height='calc(100vh - 56px)'
                 sx={{ flexGrow: 1 }}
             >
-                <Card sx={{ minWidth: 275 }}>
-                    <CardContent
-                        sx={{
-                            padding: '40px 20px',
-                        }}
-                        style={{
-                            backgroundColor: 'transparent',
-                        }}
-                    >
-                        <Box
-                            width={396}
-                            justifyContent={"center"}
-                            alignItems={"center"}
-                        >
-                            <form onSubmit={handleSubmit(onSubmit)}>
-                                <Grid
-                                    container
-                                    rowSpacing={3}
-                                    textAlign={'center'}
-                                >
-                                    <Grid item xs={12} display={'flex'} justifyContent={'center'}>
-                                        <Avatar alt="Social Media" src="../../../public/vercel.svg" />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            id="outlined-basic"
-                                            label="Username"
-                                            variant="outlined"
-                                            required
-                                            fullWidth
-                                            placeholder='Username or Email Address'
-                                            autoComplete='off'
-                                            {...register('userName')}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            id="outlined-basic"
-                                            label="Password"
-                                            variant="outlined"
-                                            required
-                                            fullWidth
-                                            placeholder='Password'
-                                            type='password'
-                                            autoComplete='new-password'
-                                            {...register('password')}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <Button
-                                            size="large"
-                                            type="submit"
-                                            variant="contained"
-                                            fullWidth
-                                        >
-                                            Sign In
-                                        </Button>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <a href='#' className='font-medium no-underline'>
-                                            Forgotten password?
-                                        </a>
-                                    </Grid>
-                                    <Grid item xs={12} >
-                                        <Divider className='w-full' />
-                                    </Grid>
-                                    <Grid item xs={12} >
-                                        <Button
-                                            size="large"
-                                            variant="contained"
-                                            fullWidth
-                                            className='bg-green-600 w-64'
-                                        >
-                                            Create New Account
-                                        </Button>
-                                    </Grid>
+                <div className={`container ${active && 'active'}`}>
+                    <div className="form-container sign-up">
+                        <RegisterAccount onToggle={handleToggle} />
+                    </div>
+                    <div className="form-container sign-in">
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <h1>Sign In</h1>
+                            <div className="social-icons">
+                                <a href="#" className="icon"><i className="fa-brands fa-google-plus-g"></i></a>
+                                <a href="#" className="icon"><i className="fa-brands fa-facebook-f"></i></a>
+                                <a href="#" className="icon"><i className="fa-brands fa-github"></i></a>
+                                <a href="#" className="icon"><i className="fa-brands fa-linkedin-in"></i></a>
+                            </div>
+                            <Grid
+                                container
+                                rowSpacing={2}
+                                textAlign={'center'}
+                            >
+                                <Grid item xs={12}>
+                                    <TextField
+                                        size='small'
+                                        label="Email"
+                                        fullWidth
+                                        placeholder='Email'
+                                        autoComplete='off'
+                                        {...register('email')}
+                                    />
                                 </Grid>
-                            </form>
-                        </Box>
-                    </CardContent>
-                </Card>
-            </Grid >
+                                <Grid item xs={12}>
+                                    <TextField
+                                        size='small'
+                                        label="Password"
+                                        fullWidth
+                                        placeholder='Password'
+                                        autoComplete='off'
+                                        {...register('password')}
+                                    />
+                                </Grid>
+                            </Grid>
+                            <LoadingButton
+                                size="medium"
+                                type='submit'
+                                loading={loading}
+                                variant="contained"
+                                className='w-32 mt-2'
+                            >
+                                <span>Sign In</span>
+                            </LoadingButton>
+                        </form>
+                    </div>
+                    <div className="toggle-container">
+                        <div className="toggle">
+                            <div className="toggle-panel toggle-left">
+                                <h1>Welcome Back!</h1>
+                                <p>Enter your personal details to use all of site features</p>
+                                <Button
+                                    onClick={handleToggle}
+                                    size='small'
+                                    variant="contained"
+                                    color="secondary"
+                                    startIcon={<SwapHorizontalCircleIcon />}
+                                >
+                                    Sign In
+                                </Button>
+                            </div>
+                            <div className="toggle-panel toggle-right">
+                                <h1>Hello, Friend!</h1>
+                                <p>Register with your personal details to use all of site features</p>
+                                <Button
+                                    onClick={handleToggle}
+                                    size='small'
+                                    variant="contained"
+                                    color="secondary"
+                                    startIcon={<SwapHorizontalCircleIcon />}
+                                >
+                                    Sign Up
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Grid>
             <div className='absolute h-full'>
                 <div className="bg"></div>
                 <div className="bg bg2"></div>

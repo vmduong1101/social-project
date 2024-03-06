@@ -3,7 +3,7 @@ import { AccountCircle } from "@mui/icons-material";
 import CircleNotificationsRoundedIcon from '@mui/icons-material/CircleNotificationsRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import OndemandVideoRoundedIcon from '@mui/icons-material/OndemandVideoRounded';
-import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded';
+import StoreIcon from '@mui/icons-material/Store';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import { AppBar, Grid, IconButton, Tab, Tabs, Toolbar } from "@mui/material";
 import { isEmpty } from "lodash";
@@ -11,7 +11,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../context/auth-context";
 import MenuPerson from "./menu";
-import StoreIcon from '@mui/icons-material/Store';
 
 const MasterLayout = () => {
     const [value, setValue] = useState(1);
@@ -53,7 +52,7 @@ const MasterLayout = () => {
 
                         )}
                     </Grid>
-                    <Grid item xs={4} className="flex justify-end">
+                    <Grid item xs={4} className="flex" justifyContent="end">
                         {isLogged && (
                             <div className="flex justify-end items-center h-full" style={{ gap: 8 }}>
                                 <IconButton

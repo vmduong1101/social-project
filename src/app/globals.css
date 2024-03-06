@@ -5,10 +5,9 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-size: 14px;
-  font-family: "Inter", sans-serif;
 }

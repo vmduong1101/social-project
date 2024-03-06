@@ -12,6 +12,9 @@ export const theme = createTheme({
             active: '#0866ff'
         },
     },
+    typography: {
+        fontFamily: 'Inter, sans-serif',
+    },
     components: {
         MuiSvgIcon: {
             styleOverrides: {
@@ -60,6 +63,20 @@ export const theme = createTheme({
                 root: {
                     backgroundColor: '#242526',
                     color: '#e4e6eb',
+                }
+            }
+        },
+        MuiFormLabel: {
+            styleOverrides: {
+                root: {
+                    left: 4,
+                }
+            }
+        },
+        MuiDialogTitle: {
+            styleOverrides: {
+                root: {
+                    padding: '8px 12px',
                 }
             }
         },
