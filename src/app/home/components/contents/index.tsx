@@ -2,6 +2,7 @@ import { Menu } from '@mui/icons-material'
 import { Card, CardContent, Grid } from '@mui/material'
 import React from 'react'
 import DynamicSlides from './slick-slider'
+import Post from './post'
 
 type Props = {}
 
@@ -10,17 +11,20 @@ const Content = (props: Props) => {
         <Grid
             container
             rowGap={6}
-            className=""
+            className="mt-3"
             style={{ width: 590 }}
         >
-            <Grid item xs={12} className='flex justify-center'>
+            <Grid item lg={12} className='flex justify-center'>
                 <DynamicSlides />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item lg={12} className='mx-14'>
+                <Post />
+            </Grid>
+            <Grid item lg={12}>
                 <Card>
                     <CardContent>
                         {Array(20).fill(0).map((_, index) => (
-                            <Grid item xs={12} key={index}>
+                            <Grid item lg={12} key={index}>
                                 <div className='flex items-center'>
                                     <div>
                                         <Menu />

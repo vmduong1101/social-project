@@ -11,6 +11,9 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../context/auth-context";
 import MenuPerson from "./menu";
+import Groups2Icon from '@mui/icons-material/Groups2';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
+import { dataTabContent } from "./data";
 
 const MasterLayout = () => {
     const [value, setValue] = useState(1);
@@ -26,16 +29,18 @@ const MasterLayout = () => {
         setValue(newValue);
     }
 
+    const active = (tab: number) => tab === value ? "indicator-active" : ""
+
     return (
         <AppBar position="sticky">
             <Toolbar>
                 <Grid container sx={{ flexGrow: 1 }}>
-                    <Grid item xs={4} display={"flex"} justifyContent={"flex-start"}>
+                    <Grid item lg={2.5} display={"flex"} justifyContent={"flex-start"}>
                         <a href="/" className="flex items-center gap-2 w-12 h-12 rounded bg-slate-50 justify-center hover:opacity-80 hover:transition-opacity">
                             <Image src={logo} alt="logo" width={35} height={35} className="rounded-full shadow-cyan-500" />
                         </a>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item lg={7} className="flex justify-center">
                         {isLogged && (
                             <Tabs
                                 value={value}
@@ -44,15 +49,22 @@ const MasterLayout = () => {
                                 variant="fullWidth"
                                 aria-label="action tabs example"
                                 onChange={handleChangeTabs}
+                                style={{ width: 590 }}
                             >
-                                <Tab label={<HomeRoundedIcon color="secondary" fontSize="large" />} value={1} />
-                                <Tab label={<OndemandVideoRoundedIcon color="secondary" fontSize="large" />} value={2} />
-                                <Tab label={<StoreIcon color="secondary" fontSize="large" />} value={3} />
+                                {dataTabContent.map((tab, index) => {
+                                    return (
+                                        <Tab
+                                            key={index}
+                                            icon={tab.icon}
+                                            className={active(index)}
+                                        />
+                                    )
+                                })}
                             </Tabs>
 
                         )}
                     </Grid>
-                    <Grid item xs={4} className="flex" justifyContent="end">
+                    <Grid item lg={2.5} className="flex" justifyContent="end">
                         {isLogged && (
                             <div className="flex justify-end items-center h-full" style={{ gap: 8 }}>
                                 <IconButton
@@ -61,6 +73,7 @@ const MasterLayout = () => {
                                     aria-controls="menu-appbar"
                                     aria-haspopup="true"
                                     color="inherit"
+                                    className="p-2"
                                 >
                                     <WidgetsIcon />
                                 </IconButton>
@@ -70,6 +83,7 @@ const MasterLayout = () => {
                                     aria-controls="menu-appbar"
                                     aria-haspopup="true"
                                     color="inherit"
+                                    className="p-2"
                                 >
                                     <CircleNotificationsRoundedIcon />
                                 </IconButton>
@@ -79,6 +93,7 @@ const MasterLayout = () => {
                                     aria-controls="menu-appbar"
                                     aria-haspopup="true"
                                     color="inherit"
+                                    className="p-2"
                                 >
                                     <AccountCircle />
                                 </IconButton>

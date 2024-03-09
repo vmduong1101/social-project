@@ -12,13 +12,13 @@ const Home = () => {
 
     return (
         <Grid container className="px-3" bgcolor={"#18191a"}>
-            <Grid item xs={3}>
+            <Grid item lg={2.5} sm={2}>
                 <Menu />
             </Grid>
-            <Grid item xs={6} className="flex flex-row justify-center items-stretch px-8">
+            <Grid item lg={7} sm={8} className="flex flex-row justify-center items-stretch px-8">
                 <Content />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item lg={2.5} sm={2}>
                 <Contact />
             </Grid>
         </Grid>

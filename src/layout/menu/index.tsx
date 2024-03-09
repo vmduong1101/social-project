@@ -52,7 +52,7 @@ const AccountMenu = () => {
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                     >
-                        <Avatar sx={{ width: 40, height: 40 }}>M</Avatar>
+                        <Avatar sx={{ width: 36, height: 36 }}>M</Avatar>
                     </IconButton>
                 </Tooltip>
             </Box>

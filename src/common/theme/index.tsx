@@ -55,6 +55,7 @@ export const theme = createTheme({
                 root: {
                     backgroundColor: '#242526',
                     color: '#e4e6eb',
+                    borderRadius: 8,
                 }
             }
         },

@@ -1,15 +1,13 @@
 import { useMutation } from '@apollo/client';
-import { Grid, TextField } from '@mui/material';
-import Button from '@mui/material/Button';
+import { LoadingButton } from '@mui/lab';
+import { Button, DialogActions, Divider, Grid, TextField } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
+import { isEqual } from 'lodash';
 import { enqueueSnackbar } from 'notistack';
 import { Fragment, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { VERIFY } from '../../graphql/mutation/mutation-verify';
-import { isEqual } from 'lodash';
-import { LoadingButton } from '@mui/lab';
 
 type FormInput = {
     code: string
@@ -22,7 +20,7 @@ type Props = {
 
 const VerifyDialog = (props: Props) => {
     const { open = false, data, onSuccess } = props
-    const [openDialog, setOpenDialog] = useState(open);
+    const [openDialog, setOpenDialog] = useState(false);
     const [verify, { loading }] = useMutation(VERIFY);
     const { register, handleSubmit, reset } = useForm<FormInput>()
 
@@ -55,14 +53,15 @@ const VerifyDialog = (props: Props) => {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogContent >
+                <Divider />
+                <DialogContent>
                     <form onSubmit={handleSubmit(onVerify)}>
                         <Grid
                             container
                             columnGap={1}
                             alignItems={'end'}
                         >
-                            <Grid item xs={9}>
+                            <Grid item lg={9}>
                                 <TextField
                                     size='small'
                                     fullWidth
@@ -70,15 +69,15 @@ const VerifyDialog = (props: Props) => {
                                     variant='standard'
                                     placeholder='Code'
                                     inputProps={{
-                                        autocomplete: 'new-password',
+                                        autoComplete: 'new-password',
                                         form: {
-                                            autocomplete: 'off',
+                                            autoComplete: 'off',
                                         },
                                     }}
                                     {...register('code')}
                                 />
                             </Grid>
-                            <Grid item xs={2}>
+                            <Grid item lg={2}>
                                 <LoadingButton
                                     size="medium"
                                     type='submit'
@@ -92,6 +91,11 @@ const VerifyDialog = (props: Props) => {
                         </Grid>
                     </form>
                 </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenDialog(false)}>
+                        Close
+                    </Button>
+                </DialogActions>
             </Dialog>
         </Fragment>
     );

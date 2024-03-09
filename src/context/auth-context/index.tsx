@@ -35,8 +35,9 @@ const AuthProvider = ({ children }: Props) => {
 
     useEffect(() => {
         if (!ISSERVER) {
+            const path = window?.location?.pathname || ''
+            if (path === '/auth/google/callback') return
             const isValidAuth = !isEmpty(token) && !isEmpty(currentUser)
-            // debugger
             if (!isValidAuth) {
                 router.replace('/login')
             }

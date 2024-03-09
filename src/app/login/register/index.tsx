@@ -59,67 +59,67 @@ const RegisterAccount = (props: Props) => {
                     spacing={2}
                     textAlign={'center'}
                 >
-                    <Grid item xs={12}>
+                    <Grid item lg={12}>
                         <TextField
                             size='small'
                             label="First Name"
                             fullWidth
                             placeholder='First Name'
                             inputProps={{
-                                autocomplete: 'new-password',
+                                autoComplete: 'new-password',
                                 form: {
-                                    autocomplete: 'off',
+                                    autoComplete: 'off',
                                 },
                             }}
                             {...register('firstName')}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item lg={12}>
                         <TextField
                             size='small'
                             label="Last Name"
                             fullWidth
                             placeholder='Last Name'
                             inputProps={{
-                                autocomplete: 'new-password',
+                                autoComplete: 'new-password',
                                 form: {
-                                    autocomplete: 'off',
+                                    autoComplete: 'off',
                                 },
                             }}
                             {...register('lastName')}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item lg={12}>
                         <TextField
                             size='small'
                             label="Email"
                             fullWidth
                             placeholder='Email'
                             inputProps={{
-                                autocomplete: 'new-password',
+                                autoComplete: 'new-password',
                                 form: {
-                                    autocomplete: 'off',
+                                    autoComplete: 'off',
                                 },
                             }}
                             {...register('email')}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item lg={12}>
                         <TextField
                             size='small'
                             label="Password"
                             fullWidth
                             placeholder='Password'
                             inputProps={{
-                                autocomplete: 'new-password',
+                                autoComplete: 'new-password',
                                 form: {
-                                    autocomplete: 'off',
+                                    autoComplete: 'off',
                                 },
                             }}
                             {...register('password')}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item lg={12}>
                         <TextField
                             size='small'
                             type='password'
@@ -127,9 +127,9 @@ const RegisterAccount = (props: Props) => {
                             fullWidth
                             placeholder='Re-Password'
                             inputProps={{
-                                autocomplete: 'new-password',
+                                autoComplete: 'new-password',
                                 form: {
-                                    autocomplete: 'off',
+                                    autoComplete: 'off',
                                 },
                             }}
                             {...register('rePassword')}

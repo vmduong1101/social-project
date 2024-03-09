@@ -11,3 +11,11 @@ body {
   margin: 0;
   padding: 0;
 }
+
+.indicator-active {
+  color: #0a62f1;
+}
+
+.indicator-active svg {
+  fill: #0a62f1;
+}
