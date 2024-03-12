@@ -5,13 +5,20 @@ import jwt from 'jsonwebtoken';
 import { isEmpty } from 'lodash';
 import { Op } from 'sequelize';
 import { checkKeyRequired } from '../../helpers/check-key-required';
-import { transport } from '../../server/server';
 import UserModel from './model';
+import { google } from 'googleapis';
 const querystring = require('querystring');
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET || ''
+var nodemailer = require("nodemailer");
 
 const saltRounds = 10;
+
+export enum EnumAccount {
+    Normal = 'normal',
+    Google = 'google',
+    Microsoft = 'microsoft'
+}
 
 export type TypeUser = {
     first_name: string
@@ -20,6 +27,8 @@ export type TypeUser = {
     password: string
     re_password: string
     role?: string
+    picture?: string
+    account: EnumAccount
 }
 
 const userResolvers = {
@@ -71,36 +80,136 @@ const userResolvers = {
                 clientId: process.env.GG_ACCOUNT_CLIENT_ID || '',
                 clientSecret: process.env.GG_ACCOUNT_CLIENT_SECRET || '',
                 redirectUri: process.env.GG_ACCOUNT_REDIRECT_URI || '',
-              });
+            })
 
-              const googleUser = await axios.get(
+            const googleUser = await axios.get(
                 `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${access_token}`,
                 {
                   headers: {
                     Authorization: `Bearer ${id_token}`,
                   },
                 }
-              )
-              .then((res) => res.data)
-              .catch((error) => {
+            )
+            .then((res) => res.data)
+            .catch((error) => {
                 console.error(`Failed to fetch user`);
                 throw new Error(error.message);
-              });
+            });
 
-            console.log('googleUser', googleUser)
-            
-            return {
-                code: 200,
-                message: 'Login success',
-                access_token,
-                data: googleUser
+            const user = await UserModel.findOne({ where: { email: googleUser?.email } })
+
+            if(!!user) {
+                const oldUser = user?.dataValues || {}
+                if(oldUser?.account !== EnumAccount.Google) {
+                    return {
+                        code: 400,
+                        access_token: null,
+                        message: 'Email already exist',
+                        data: null
+                    }
+                }
+                const token = jwt.sign({ user: oldUser?.email, role: oldUser?.role }, ADMIN_SECRET, { expiresIn: '1h' })
+                return {
+                    code: 200,
+                    access_token: token,
+                    message: 'Login with google success',
+                    data: oldUser
+                }
+            } else {
+                const data = await UserModel.create({
+                    full_name: googleUser?.name,
+                    email: googleUser?.email,
+                    role: 'user',
+                    picture: googleUser?.picture,
+                    account: EnumAccount.Google
+                })
+
+                const token = jwt.sign({ user: data?.dataValues?.email, role: data?.dataValues?.role }, ADMIN_SECRET, { expiresIn: '1h' })
+                return {
+                    code: 200,
+                    access_token: token,
+                    message: 'Login with google success',
+                    data: data
+                }
+            }
+        },
+        signInWithMs: async (parent: void, args: any, context: any, info: GraphQLResolveInfo) => {
+            const { code } = args?.arg
+
+            if(!code) {
+                return {
+                    code: 400,
+                    message: 'Invalid code'
+                }
+            }
+
+            const tokenUrl = 'https://login.microsoftonline.com/559734cc-6d36-4fe9-9f94-8221128e7ab2/oauth2/v2.0/token'
+            const values = {
+                code: code,
+                client_id: process.env.MS_ACCOUNT_CLIENT_ID || '',
+                client_secret: process.env.MS_ACCOUNT_CLIENT_SECRET || '',
+                redirect_uri: process.env.MS_ACCOUNT_REDIRECT_URI || '',
+                scope: 'offline_access openid email profile User.Read',
+                grant_type: "authorization_code",
+            };
+
+            const {access_token} = await axios.post(tokenUrl, values, {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then((res) => res.data)
+            .catch((error) => {
+                console.error(`Failed to fetch auth tokens`);
+                throw new Error(error.message);
+            });
+
+            const userUrl = 'https://graph.microsoft.com/v1.0/me'
+            const msUser = await axios.get(userUrl, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                },
+            })
+            .then((res) => res.data)
+            .catch((error) => {
+                console.error(`Failed to fetch user`);
+                throw new Error(error.message);
+            });
+
+            const user = await UserModel.findOne({ where: { email: msUser?.mail } })
+
+            if(!!user) {
+                const oldUser = user?.dataValues || {}
+                const token = jwt.sign({ user: oldUser?.email, role: oldUser?.role }, ADMIN_SECRET, { expiresIn: '1h' })
+                return {
+                    code: 200,
+                    access_token: token,
+                    message: 'Login with ms success',
+                    data: oldUser
+                }
+            } else {
+                const data = await UserModel.create({
+                    full_name: msUser?.surname + ' ' + msUser?.givenName,
+                    email: msUser?.mail,
+                    role: 'user',
+                    picture: msUser?.picture,
+                    account: EnumAccount.Microsoft
+                })
+
+                return {
+                    code: 200,
+                    access_token,
+                    message: 'Login with ms success',
+                    data: data
+                }
             }
         }
     },
     Mutation: {
-       login: async (parent: void, args: any, context: any, info: GraphQLResolveInfo) => {
+        login: async (parent: void, args: any, context: any, info: GraphQLResolveInfo) => {
             const { email, password } = args.arg as TypeUser
             const result = await UserModel.findOne({ where: { email } })
+
             if(result) {
                 const { password: hashPassword, ...data } = result.dataValues
                 const isPasswordMatch = await bcrypt.compare(password, hashPassword)
@@ -122,13 +231,17 @@ const userResolvers = {
                 access_token: '',
                 data: null
             }
-       },
+        },
         logout: async (parent: void, args: any, context: any, info: GraphQLResolveInfo) => {
-              return {
+            const logoutUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=localhost:3000/login` 
+
+            return {
                 code: 200,
                 message: 'Logout success',
                 access_token: '',
-                data: null
+                data: {
+                    url: logoutUrl
+                }
             }
         },
         verify: async (parent: void, args: any, context: any, info: GraphQLResolveInfo) => {
@@ -160,7 +273,8 @@ const userResolvers = {
                     full_name,
                     password: newPassword,
                     email,
-                    role
+                    role,
+                    account: EnumAccount.Normal
                 }) 
 
                 return {
@@ -213,16 +327,17 @@ const userResolvers = {
 
                 const full_name = Object.values({ first_name, last_name}).filter(Boolean).join(' ') || null
                 const verificationCode = Math.floor(10000000 + Math.random() * 90000000).toString().substring(0, 6)
+                const oauth2Client = new google.auth.OAuth2(
+                    process.env.GG_MAIL_CLIENT_ID,
+                    process.env.GG_MAIL_CLIENT_SECRET,
+                    process.env.GG_MAIL_REDIRECT_URI,
+                );
 
-                const data = await axios.post('https://oauth2.googleapis.com/token', {
-                    client_id: process.env.GG_MAIL_CLIENT_ID,
-                    client_secret: process.env.GG_MAIL_CLIENT_SECRET,
-                    refresh_token: process.env.GG_MAIL_REFRESH_TOKEN,
-                    grant_type: 'refresh_token',
-                })
- 
+                oauth2Client.setCredentials({refresh_token: process.env.GG_MAIL_REFRESH_TOKEN});
+                const accessToken = await oauth2Client.getAccessToken()
+
                 var mail = {
-                    from: `Võ Minh Đương <${process.env.GG_MY_EMAIL}>`,
+                    from: `Võ Minh Đương <${process.env.GG_MAIL_MY_EMAIL}>`,
                     to: email,
                     subject: "Xác nhận tài khoản của bạn",
                     html: 
@@ -232,37 +347,53 @@ const userResolvers = {
                     </div>
                     `,
                     auth: {
-                        user: process.env.GG_MY_EMAIL,
-                        accessToken: data?.data?.access_token,
-                      },
+                        user: process.env.GG_MAIL_MY_EMAIL,
+                        refreshToken: process.env.GG_MAIL_REFRESH_TOKEN,
+                        accessToken: accessToken.token,
+                        expires: accessToken.res?.data?.expiry_date,
+                    }
                 }
 
-                const result = await transport.sendMail(mail)
-
-                if(result) {
-                    const data = {
-                        first_name,
-                        last_name,
-                        full_name,
-                        password,
-                        re_password,
-                        email,
-                        role,
-                        code: verificationCode
+                const transport = nodemailer.createTransport({
+                    host: "smtp.gmail.com",
+                    port: 465,
+                    secure: true,
+                    auth: {
+                      type: 'OAuth2',
+                      clientId: process.env.GG_MAIL_CLIENT_ID,
+                      clientSecret: process.env.GG_MAIL_CLIENT_SECRET,
+                    },
+                    tls: {
+                        rejectUnauthorized: false
                     }
+                })
+                  
+                const result = await transport.sendMail(mail)
     
+                if(result) {
                     return {
                         code: 200,
                         message: 'Send email success',
-                        data: data
-                    }
+                        data: {
+                            first_name,
+                            last_name,
+                            full_name,
+                            password,
+                            re_password,
+                            email,
+                            role,
+                            code: verificationCode
+                        }
+                    }   
                 } else {
+
                     return {
                         code: 400,
                         message: 'Send email fail',
                         data: null
                     }
                 }
+
             } catch (error: any) {
                 return {
                     code: 400,
@@ -282,6 +413,21 @@ const userResolvers = {
                   "https://www.googleapis.com/auth/userinfo.profile",
                   "https://www.googleapis.com/auth/userinfo.email",
                 ].join(" "),
+            }
+
+            const url = `${oauth2Endpoint}?${querystring.stringify(params)}`
+            return {
+                code: 200,
+                url: url
+            }
+        },
+        generateAuthMs: async () => {
+            var oauth2Endpoint = `https://login.microsoftonline.com/${process.env.MS_ACCOUNT_TENANT_ID}/oauth2/v2.0/authorize`
+            const params = {
+                redirect_uri: process.env.MS_ACCOUNT_REDIRECT_URI || '',
+                client_id: process.env.MS_ACCOUNT_CLIENT_ID || '',
+                response_type: "code",
+                scope: ["offline_access","openid","email","profile","User.Read"].join(" "),
             }
 
             const url = `${oauth2Endpoint}?${querystring.stringify(params)}`

@@ -3,23 +3,25 @@ import gql from 'graphql-tag'
 const userTypeDefs = gql`
   type Query {
     users: [User]
-    signInWithGoogle(arg: ArgSignInWithGoogle): OutputLogin
+    signInWithGoogle(arg: ArgSignInWithOauth2): OutputOAuth2
+    signInWithMs(arg: ArgSignInWithOauth2): OutputOAuth2
   }
 
   type Mutation {
     login(arg: ArgLogin): OutputLogin
-    logout(arg: ArgLogout): OutputLogin
+    logout(arg: ArgLogout): OutputLogout
     verify(arg: ArgRegister): OutputVerify
     register(arg: ArgRegister): OutputRegister
-    generateAuthGoogle: OutputGenerateAuthGoogle
+    generateAuthGoogle: OutputGenerateAuth
+    generateAuthMs: OutputGenerateAuth
   }
 
-  type OutputGenerateAuthGoogle {
+  type OutputGenerateAuth {
     code: Int
     url: String
   }
 
-  input ArgSignInWithGoogle {
+  input ArgSignInWithOauth2 {
     code: String!
   }
 
@@ -30,7 +32,27 @@ const userTypeDefs = gql`
     data: User
   }
 
+  type OutputLogout {
+    code: Int
+    message: String
+    access_token: String
+    data: DataLogout
+  }
+
+  type DataLogout {
+    url: String
+  }
+
+  type OutputOAuth2 {
+    id: Int
+    code: Int
+    message: String
+    access_token: String
+    data: User
+  }
+
   type User {
+    id: Int
     first_name: String
     last_name: String
     full_name: String
@@ -38,6 +60,8 @@ const userTypeDefs = gql`
     role: String
     address: String
     code: String
+    picture: String
+    account: String
   }
 
   input ArgLogin {
