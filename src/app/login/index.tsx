@@ -13,7 +13,7 @@ import google from '@/public/images/google.png'
 import team from '@/public/images/business.png'
 import './styles.css'
 import Image from 'next/image'
-import { GOOGLE_LOGIN } from './graphql/mutation/mutation-google-login'
+import { GOOGLE_LOGIN, MS_LOGIN } from './graphql/mutation/mutation-oauth2'
 
 type Props = {}
 
@@ -22,6 +22,16 @@ interface FormInput {
     password: any
 }
 
+export const openPopup = (url: string, width: number, height: number) => {
+    const leftPosition = (window.screen.width - width) / 2;
+    const topPosition = (window.screen.height - height) / 2;
+    const popupOptions = `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${width}, height=${height}, top=${topPosition}, left=${leftPosition}`;
+
+    window.open(url, 'popupWindow', popupOptions);
+    return
+};
+
+
 const LoginPage = (props: Props) => {
     const router = useRouter()
 
@@ -29,24 +39,25 @@ const LoginPage = (props: Props) => {
     const [login, { loading }] = useMutation(LOGIN);
     const { setCurrentUser, setToken } = useAuthContext()
     const [generateAuthGoogle, { loading: googleLoading }] = useMutation(GOOGLE_LOGIN);
+    const [generateAuthMs, { loading: msLoading }] = useMutation(MS_LOGIN);
     const { register, handleSubmit, formState: { errors } } = useForm<FormInput>()
 
+    const [errorLogin, setErrorLogin] = useState<any>()
+
     const [active, setActive] = useState(false)
-
-    const openPopup = (url: string, width: number, height: number) => {
-        const leftPosition = (window.screen.width - width) / 2;
-        const topPosition = (window.screen.height - height) / 2;
-        const popupOptions = `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${width}, height=${height}, top=${topPosition}, left=${leftPosition}`;
-
-        window.open(url, 'popupWindow', popupOptions);
-        return
-    };
-
 
     const handleGenerateAuthGoogle = () => {
         return generateAuthGoogle({
             onCompleted(data) {
                 openPopup(data?.generateAuthGoogle?.url || '', 500, 600)
+            }
+        })
+    }
+
+    const handleGenerateAuthMs = () => {
+        return generateAuthMs({
+            onCompleted(data) {
+                openPopup(data?.generateAuthMs?.url || '', 500, 600)
             }
         })
     }
@@ -57,7 +68,6 @@ const LoginPage = (props: Props) => {
             password: data.password
         },
         onCompleted(data) {
-            console.log(data)
             const message = data?.login?.message || ''
             const variant = data?.login?.code === 200 ? 'success' : 'error'
             enqueueSnackbar(message, { variant })
@@ -75,6 +85,31 @@ const LoginPage = (props: Props) => {
     const handleToggle = () => {
         setActive(!active)
     }
+
+    useEffect(() => {
+        window.addEventListener('message', (event) => {
+            if (event.origin !== window.origin) return;
+            if (event.data?.signInWithGoogle?.code === 400) {
+                return setErrorLogin(event.data?.signInWithGoogle)
+            }
+            const token = event.data?.signInWithGoogle?.access_token || event.data?.signInWithMs?.access_token
+            const user = event.data?.signInWithGoogle?.data || event.data?.signInWithMs?.data || {}
+
+            if (token) {
+                localStorage.setItem('token', token)
+                localStorage.setItem('social-user', JSON.stringify(user))
+                setToken(token)
+                setCurrentUser(user)
+                router.push('/')
+            }
+        })
+    }, [router, setToken, setCurrentUser, enqueueSnackbar])
+
+    useEffect(() => {
+        if (!!errorLogin) {
+            enqueueSnackbar(errorLogin?.message, { variant: 'error' })
+        }
+    }, [errorLogin, enqueueSnackbar])
 
     return (
         <Box
@@ -140,10 +175,17 @@ const LoginPage = (props: Props) => {
                                 >
                                     <Image src={google} alt="Google" className='w-6 h-6' />
                                 </Fab>
-                                <Fab color="primary" aria-label="add" className='bg-slate-200  shadow-sm' size='medium'>
+                                <Fab
+                                    color="primary"
+                                    aria-label="add"
+                                    className='bg-slate-200  shadow-sm'
+                                    size='medium'
+                                    onClick={handleGenerateAuthMs}
+                                >
                                     <Image src={team} alt="Team" className='w-6 h-6' />
                                 </Fab>
                             </div>
+
                         </form>
                     </div>
                     <div className="toggle-container">

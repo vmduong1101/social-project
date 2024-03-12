@@ -81,5 +81,21 @@ export const theme = createTheme({
                 }
             }
         },
+        MuiMenuItem: {
+            styleOverrides: {
+                root: {
+                    '@media (min-width: 600px)': {
+                        minHeight: 48,
+                    },
+                }
+            }
+        },
+        MuiGrid: {
+            styleOverrides: {
+                root: {
+                    marginLeft: 0
+                }
+            }
+        },
     }
 });

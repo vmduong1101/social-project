@@ -8,3 +8,12 @@ export const GOOGLE_LOGIN = gql`
     }
   }
 `;
+
+export const MS_LOGIN = gql`
+  mutation generateAuthMs {
+    generateAuthMs {
+      code
+      url
+    }
+  }
+`;

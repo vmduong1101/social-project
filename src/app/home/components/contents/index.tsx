@@ -17,7 +17,7 @@ const Content = (props: Props) => {
             <Grid item lg={12} className='flex justify-center'>
                 <DynamicSlides />
             </Grid>
-            <Grid item lg={12} className='mx-14'>
+            <Grid item lg={12}>
                 <Post />
             </Grid>
             <Grid item lg={12}>

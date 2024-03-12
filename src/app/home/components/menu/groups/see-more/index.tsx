@@ -21,7 +21,7 @@ const SeeMore = (props: Props) => {
             className='hover:bg-gray-hover p-2 rounded-md cursor-pointer'
             onClick={handleExpanded}
         >
-            <Grid item lg={2}>
+            <Grid item lg={2} style={{ paddingLeft: 0 }}>
                 <div className='flex items-center justify-center'>
                     <IconButton
                         color="inherit"
@@ -31,7 +31,7 @@ const SeeMore = (props: Props) => {
                     </IconButton>
                 </div>
             </Grid>
-            <Grid item lg={10} fontSize={15}>
+            <Grid item lg={10} fontSize={15} style={{ paddingLeft: 4 }}>
                 <div className='font-medium text-text-dark'>
                     See more
                 </div>

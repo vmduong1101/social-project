@@ -1,9 +1,11 @@
-import { LOGOUT } from '@/src/layout/menu/graphql/mutation/mutation-logout';
+import { openPopup } from '@/src/app/login';
 import { useAuthContext } from '@/src/context/auth-context';
+import { LOGOUT } from '@/src/layout/menu/graphql/mutation/mutation-logout';
 import { useMutation } from '@apollo/client';
 import Logout from '@mui/icons-material/Logout';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
+import { Popover } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -18,7 +20,7 @@ const AccountMenu = () => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const [logout] = useMutation(LOGOUT);
-    const { setCurrentUser, setToken } = useAuthContext()
+    const { currentUser, setCurrentUser, setToken } = useAuthContext()
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -36,6 +38,10 @@ const AccountMenu = () => {
                 localStorage.removeItem('social-user');
                 setCurrentUser({});
                 setToken('');
+                if ('account' in currentUser && currentUser?.account === 'microsoft') {
+                    const logoutUrl = data?.logout?.data?.url
+                    openPopup(logoutUrl, 500, 600)
+                }
             }
         },
     })
@@ -52,11 +58,20 @@ const AccountMenu = () => {
                         aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
                     >
-                        <Avatar sx={{ width: 36, height: 36 }}>M</Avatar>
+                        <Avatar sx={{ width: 36, height: 36 }} src={currentUser?.picture}>M</Avatar>
                     </IconButton>
                 </Tooltip>
             </Box>
-            <Menu
+            {/* <Popover
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+            ></Popover> */}
+            <Popover
                 anchorEl={anchorEl}
                 id="account-menu"
                 open={open}
@@ -88,11 +103,11 @@ const AccountMenu = () => {
                                 zIndex: 0,
                             },
                         },
-                    }
-
+                    },
                 }}
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                disableScrollLock={true}
             >
                 <MenuItem onClick={handleClose}>
                     <Avatar /> Profile
@@ -119,7 +134,7 @@ const AccountMenu = () => {
                     </ListItemIcon>
                     Logout
                 </MenuItem>
-            </Menu>
+            </Popover>
         </React.Fragment>
     );
 }

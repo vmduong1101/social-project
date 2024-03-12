@@ -1,29 +1,24 @@
 import logo from "@/public/logo_social.svg";
 import { AccountCircle } from "@mui/icons-material";
 import CircleNotificationsRoundedIcon from '@mui/icons-material/CircleNotificationsRounded';
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import OndemandVideoRoundedIcon from '@mui/icons-material/OndemandVideoRounded';
-import StoreIcon from '@mui/icons-material/Store';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import { AppBar, Grid, IconButton, Tab, Tabs, Toolbar } from "@mui/material";
 import { isEmpty } from "lodash";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../context/auth-context";
-import MenuPerson from "./menu";
-import Groups2Icon from '@mui/icons-material/Groups2';
-import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import { dataTabContent } from "./data";
+import MenuPerson from "./menu";
 
 const MasterLayout = () => {
     const [value, setValue] = useState(1);
-    const { currentUser, token } = useAuthContext();
+    const { token } = useAuthContext();
     const [isLogged, setIsLogged] = useState(false);
 
     useEffect(() => {
-        const isValid = !isEmpty(currentUser) && !isEmpty(token)
+        const isValid = !isEmpty(token)
         setIsLogged(isValid)
-    }, [currentUser, token])
+    }, [token])
 
     const handleChangeTabs = (_event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -64,9 +59,9 @@ const MasterLayout = () => {
 
                         )}
                     </Grid>
-                    <Grid item lg={2.5} className="flex" justifyContent="end">
+                    <Grid item lg={2.5}>
                         {isLogged && (
-                            <div className="flex justify-end items-center h-full" style={{ gap: 8 }}>
+                            <div className="flex items-center h-full" style={{ gap: 8, justifyContent: 'flex-end' }}>
                                 <IconButton
                                     size="large"
                                     aria-label="account of current user"

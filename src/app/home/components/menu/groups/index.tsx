@@ -1,7 +1,7 @@
 import { Box, Grid } from '@mui/material'
-import ItemAction from './item'
-import { ItemMenu } from '../data'
 import SeeMore from './see-more'
+import LiItemAction, { ItemMenu } from '@/src/common/components/li-item'
+import LiProfile from './li-profile'
 
 type Props = {
     data: ItemMenu[]
@@ -10,10 +10,13 @@ type Props = {
 const GroupsMenu = ({ data }: Props) => {
     return (
         <Box>
-            <Grid container justifyContent={"center"}>
+            <Grid container justifyContent={"center"} className='h-full mt-3'>
+                <Grid item lg={12}>
+                    <LiProfile />
+                </Grid>
                 {data.map((item, index) => (
                     <Grid item lg={12} key={index}>
-                        <ItemAction item={item} />
+                        <LiItemAction item={item} />
                     </Grid>
                 ))}
                 <Grid item lg={12}>

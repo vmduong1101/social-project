@@ -11,13 +11,15 @@ export type CurrentUser = {
     email?: string
     full_name?: string
     role?: string
+    picture?: string
+    account?: string
 }
 
 export type AuthContext = {
     token: string | null
     setToken: React.Dispatch<React.SetStateAction<string | null>>
-    currentUser: CurrentUser | {}
-    setCurrentUser: React.Dispatch<React.SetStateAction<CurrentUser | {}>>
+    currentUser: CurrentUser | any
+    setCurrentUser: React.Dispatch<React.SetStateAction<CurrentUser | any>>
 }
 
 const ISSERVER = typeof window === "undefined"
@@ -36,13 +38,13 @@ const AuthProvider = ({ children }: Props) => {
     useEffect(() => {
         if (!ISSERVER) {
             const path = window?.location?.pathname || ''
-            if (path === '/auth/google/callback') return
-            const isValidAuth = !isEmpty(token) && !isEmpty(currentUser)
+            if (['/auth/google/callback', '/auth/microsoft/callback'].includes(path)) return
+            const isValidAuth = !isEmpty(token)
             if (!isValidAuth) {
                 router.replace('/login')
             }
         }
-    }, [currentUser, token, router])
+    }, [token, router])
 
     return (
         <ContextProvider.Provider value={{ token, setToken, currentUser, setCurrentUser }}>

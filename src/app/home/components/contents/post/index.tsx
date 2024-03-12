@@ -1,14 +1,13 @@
 import feel from '@/public/images/happy.png';
 import picture from '@/public/images/picture.png';
 import stream from '@/public/images/video-stream.png';
+import LiItemAction, { EnumItemMenu, ItemMenu } from '@/src/common/components/li-item';
 import DirectionsIcon from '@mui/icons-material/Directions';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import { Avatar, Card, CardContent, Grid, IconButton, Paper } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import InputBase from '@mui/material/InputBase';
-import { EnumItemMenu, ItemMenu } from '../../menu/data';
-import ItemAction from '../../menu/groups/item';
 
 type Props = {}
 
@@ -68,7 +67,7 @@ const Post = (props: Props) => {
                             {dataPostAction.map((item, index) => {
                                 return (
                                     <Grid item lg={4} key={index} className='flex'>
-                                        <ItemAction item={item} className='bg-bg-card' />
+                                        <LiItemAction item={item} className='bg-bg-card' />
                                     </Grid>
                                 )
                             })}

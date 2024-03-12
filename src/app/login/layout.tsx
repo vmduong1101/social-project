@@ -11,16 +11,16 @@ export default function LoginLayout({
     children: React.ReactNode
 }) {
     const router = useRouter()
-    const { token, currentUser } = useAuthContext()
+    const { token } = useAuthContext()
 
     useEffect(() => {
-        const isValidAuth = !isEmpty(token) && !isEmpty(currentUser)
+        const isValidAuth = !isEmpty(token)
         if (isValidAuth) {
             router.replace('/')
         } else {
             router.replace('/login')
         }
-    }, [token, currentUser, router])
+    }, [token, router])
 
     return (
         <section>
