@@ -2,12 +2,15 @@ import feel from '@/public/images/happy.png';
 import picture from '@/public/images/picture.png';
 import stream from '@/public/images/video-stream.png';
 import LiItemAction, { EnumItemMenu, ItemMenu } from '@/src/common/components/li-item';
+import { useAuthContext } from '@/src/context/auth-context';
 import DirectionsIcon from '@mui/icons-material/Directions';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import { Avatar, Card, CardContent, Grid, IconButton, Paper } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import InputBase from '@mui/material/InputBase';
+import ModalCreatePost from './modal-create';
+import { useState } from 'react';
 
 type Props = {}
 
@@ -30,34 +33,36 @@ const dataPostAction: ItemMenu[] = [
 ]
 
 const Post = (props: Props) => {
+    const [open, setOpen] = useState(false);
+    const { currentUser } = useAuthContext()
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    }
+
     return (
         <Card>
             <CardContent>
                 <Grid container>
-                    <Grid item lg={12} className='flex justify-between'>
+                    <Grid item lg={12} className='flex justify-between items-center gap-6'>
                         <div>
-                            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                            <Avatar style={{ width: 44, height: 44 }} src={currentUser?.picture}>M</Avatar>
                         </div>
-                        <div>
+                        <div className='w-full' onClick={handleClickOpen}>
                             <Paper
                                 component="form"
-                                sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+                                style={{ backgroundColor: '#3a3b3c', padding: '4px' }}
+                                className='rounded-full'
                             >
-                                <IconButton sx={{ p: '10px' }} aria-label="menu">
-                                    <MenuIcon />
-                                </IconButton>
                                 <InputBase
-                                    sx={{ ml: 1, flex: 1 }}
-                                    placeholder="Search Google Maps"
+                                    placeholder={`What's on your mind?`}
                                     inputProps={{ 'aria-label': 'search google maps' }}
+                                    className='px-4 w-full text-white'
                                 />
-                                <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-                                    <SearchIcon />
-                                </IconButton>
-                                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                                <IconButton color="primary" sx={{ p: '10px' }} aria-label="directions">
-                                    <DirectionsIcon />
-                                </IconButton>
                             </Paper>
                         </div>
                     </Grid>
@@ -75,8 +80,8 @@ const Post = (props: Props) => {
                     </Grid>
                 </Grid>
             </CardContent>
-        </Card>
-
+            <ModalCreatePost open={open} onClose={handleClose} />
+        </Card >
     )
 }
 

@@ -26,6 +26,7 @@ export const REGISTER = gql`
             code
             email
             role
+            expires_at
         }
     }
   }

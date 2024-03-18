@@ -11,7 +11,9 @@ module.exports = {
         'gray-hover': '#3a3b3c',
         'gray-divider': '#4b4c4f',
         'bg-icon-secondary': '#303031',
+        'bg-secondary': '#0866ff',
         'bg-card': '#242526',
+        'bg-icon-button':'#3a3b3c'
       },
       spacing: {
         'top-18': '4.5rem',

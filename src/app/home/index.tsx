@@ -1,12 +1,9 @@
 'use client'
 
 import { Grid } from "@mui/material"
-import dynamic from "next/dynamic"
-
-const Menu = dynamic(() => import('./components/menu'), { loading: () => <p>Loading...</p> })
-const Content = dynamic(() => import('./components/contents'), { loading: () => <p>Loading...</p> })
-const Contact = dynamic(() => import('./components/contact'), { loading: () => <p>Loading...</p> })
-
+import Contact from "./components/contact"
+import Content from "./components/contents"
+import Menu from "./components/menu"
 
 const Home = () => {
 

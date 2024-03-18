@@ -32,7 +32,7 @@ const MasterLayout = () => {
                 <Grid container sx={{ flexGrow: 1 }}>
                     <Grid item lg={2.5} display={"flex"} justifyContent={"flex-start"}>
                         <a href="/" className="flex items-center gap-2 w-12 h-12 rounded bg-slate-50 justify-center hover:opacity-80 hover:transition-opacity">
-                            <Image src={logo} alt="logo" width={35} height={35} className="rounded-full shadow-cyan-500" />
+                            <Image src={logo} alt="logo" width={35} height={35} className="shadow-cyan-500" />
                         </a>
                     </Grid>
                     <Grid item lg={7} className="flex justify-center">
@@ -69,6 +69,7 @@ const MasterLayout = () => {
                                     aria-haspopup="true"
                                     color="inherit"
                                     className="p-2"
+                                    style={{ background: '#3a3b3c' }}
                                 >
                                     <WidgetsIcon />
                                 </IconButton>
@@ -79,6 +80,7 @@ const MasterLayout = () => {
                                     aria-haspopup="true"
                                     color="inherit"
                                     className="p-2"
+                                    style={{ background: '#3a3b3c' }}
                                 >
                                     <CircleNotificationsRoundedIcon />
                                 </IconButton>
@@ -89,6 +91,7 @@ const MasterLayout = () => {
                                     aria-haspopup="true"
                                     color="inherit"
                                     className="p-2"
+                                    style={{ background: '#3a3b3c' }}
                                 >
                                     <AccountCircle />
                                 </IconButton>

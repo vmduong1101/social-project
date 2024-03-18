@@ -38,8 +38,8 @@ const LoginPage = (props: Props) => {
     const { enqueueSnackbar } = useSnackbar();
     const [login, { loading }] = useMutation(LOGIN);
     const { setCurrentUser, setToken } = useAuthContext()
-    const [generateAuthGoogle, { loading: googleLoading }] = useMutation(GOOGLE_LOGIN);
-    const [generateAuthMs, { loading: msLoading }] = useMutation(MS_LOGIN);
+    const [generateAuthGoogle] = useMutation(GOOGLE_LOGIN);
+    const [generateAuthMs] = useMutation(MS_LOGIN);
     const { register, handleSubmit, formState: { errors } } = useForm<FormInput>()
 
     const [errorLogin, setErrorLogin] = useState<any>()
@@ -121,7 +121,7 @@ const LoginPage = (props: Props) => {
                 alignItems="center"
                 justifyContent='center'
                 height='calc(100vh - 56px)'
-                sx={{ flexGrow: 1 }}
+                style={{ flexGrow: 1 }}
             >
                 <div className={`container ${active && 'active'}`}>
                     <div className="form-container sign-up">

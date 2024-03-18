@@ -8,8 +8,8 @@ const Menu = () => {
     return (
         <Grid
             container
-            className="sticky top-14 left-4 overflow-auto invisible transition-all opacity-70 scrollbar-cs 
-            hover:visible focus:visible hover:transition-all hover:opacity-100"
+            className="sticky top-14 left-4 overflow-auto invisible transition-all scrollbar-cs 
+            hover:visible focus:visible hover:transition-all"
             style={{ maxHeight: 'calc(100vh - 56px)' }}
         >
             <Grid item lg={12} className="h-full visible">

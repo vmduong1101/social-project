@@ -18,8 +18,8 @@ export type CurrentUser = {
 export type AuthContext = {
     token: string | null
     setToken: React.Dispatch<React.SetStateAction<string | null>>
-    currentUser: CurrentUser | any
-    setCurrentUser: React.Dispatch<React.SetStateAction<CurrentUser | any>>
+    currentUser: CurrentUser
+    setCurrentUser: React.Dispatch<React.SetStateAction<CurrentUser>>
 }
 
 const ISSERVER = typeof window === "undefined"

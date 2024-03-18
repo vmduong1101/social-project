@@ -2,11 +2,13 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { ThemeProvider } from "@mui/material";
 import { SnackbarProvider } from "notistack";
-import React from "react";
+import React, { useEffect } from "react";
 import { theme } from "../common/theme";
 import { AuthProvider } from "../context/auth-context";
 import MasterLayout from "../layout";
 import './globals.css';
+import { RecoilRoot } from "recoil";
+import { usePathname, useRouter } from "next/navigation";
 
 // export const metadata = {
 //   title: 'Next.js',
@@ -23,20 +25,23 @@ type Props = {
 }
 
 const RootLayout = ({ children }: Props) => {
+  const path = usePathname()
 
   return (
-    <html lang="en">
+    <html lang="en" className={path !== '/login' ? 'overflow-y-scroll' : 'overflow-y-auto'}>
       <body>
-        <ThemeProvider theme={theme}>
-          <ApolloProvider client={client}>
-            <AuthProvider>
-              <SnackbarProvider>
-                <MasterLayout />
-                {children}
-              </SnackbarProvider>
-            </AuthProvider>
-          </ApolloProvider>
-        </ThemeProvider>
+        <RecoilRoot>
+          <ThemeProvider theme={theme}>
+            <ApolloProvider client={client}>
+              <AuthProvider>
+                <SnackbarProvider>
+                  <MasterLayout />
+                  {children}
+                </SnackbarProvider>
+              </AuthProvider>
+            </ApolloProvider>
+          </ThemeProvider>
+        </RecoilRoot>
       </body>
     </html>
   )

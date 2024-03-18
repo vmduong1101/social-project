@@ -27,7 +27,6 @@ export const theme = createTheme({
             styleOverrides: {
                 root: {
                     color: '#e4e6eb',
-                    background: '#3a3b3c',
                     ":hover": {
                         background: '#4f4f4f'
                     }
@@ -94,6 +93,14 @@ export const theme = createTheme({
             styleOverrides: {
                 root: {
                     marginLeft: 0
+                }
+            }
+        },
+        MuiDialog: {
+            styleOverrides: {
+                paper: {
+                    backgroundColor: '#242526',
+                    color: '#e4e6eb',
                 }
             }
         },

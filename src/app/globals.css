@@ -12,6 +12,35 @@ body {
   padding: 0;
 }
 
+.basic-border {
+  border: 1px solid #3E4042;
+  border-radius: 8px;
+}
+
+.text-secondary {
+  color: #B0B3B8;
+}
+
+.text-secondary svg {
+  fill: #B0B3B8;
+}
+
+.dot-after {
+  position: relative;
+}
+
+.dot-after::after {
+  content: '';
+  width: 4px;
+  height: 4px;
+  background-color: #B0B3B8;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  right: -8px;
+  transform: translateY(-50%);
+}
+
 .indicator-active {
   color: #0a62f1;
 }

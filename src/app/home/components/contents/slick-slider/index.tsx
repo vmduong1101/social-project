@@ -11,12 +11,14 @@ function DynamicSlides() {
         if (currentSlide === 0) return null;
 
         return <ArrowBackIosTwoToneIcon
+            fontSize='small'
             {...props}
         />
     };
 
     const SlickArrowRight = ({ currentSlide, slideCount, ...props }: CustomArrowProps) => (
         <ArrowForwardIosTwoToneIcon
+            fontSize='small'
             {...props}
         />
     );

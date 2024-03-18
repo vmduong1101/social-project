@@ -1,18 +1,23 @@
-import { Box, Grid } from '@mui/material'
 import LiItemAction from '@/src/common/components/li-item'
-import { groupContact, groupDataMenu } from '../../data'
+import { Box, Grid } from '@mui/material'
+import { groupContact } from '../../data'
 
 type Props = {}
 
 const Contact = (props: Props) => {
     return (
-        <Box>
-            <Grid container>
-                <div>
-                    <p className='text-text-dark text-base font-medium'>Contact</p>
-                </div>
-            </Grid>
-            <Grid container className='sticky top-14 left-4 overflow-auto'>
+        <Grid
+            container
+            className="sticky top-14 left-4 overflow-auto invisible transition-all scrollbar-cs 
+                hover:visible focus:visible hover:transition-all"
+            style={{ maxHeight: 'calc(100vh - 56px)' }}
+        >
+            <Grid item lg={12} className="h-full visible">
+                <Grid item lg={12}>
+                    <div>
+                        <p className='text-text-dark text-base font-medium'>Contact</p>
+                    </div>
+                </Grid>
                 <Grid item lg={12}>
                     <Box>
                         <Grid container justifyContent={"center"}>
@@ -25,7 +30,7 @@ const Contact = (props: Props) => {
                     </Box>
                 </Grid>
             </Grid>
-        </Box>
+        </Grid>
     )
 }
 

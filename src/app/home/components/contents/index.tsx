@@ -3,6 +3,7 @@ import { Card, CardContent, Grid } from '@mui/material'
 import React from 'react'
 import DynamicSlides from './slick-slider'
 import Post from './post'
+import TimeLines from './time-lines'
 
 type Props = {}
 
@@ -10,7 +11,7 @@ const Content = (props: Props) => {
     return (
         <Grid
             container
-            rowGap={6}
+            rowGap={2}
             className="mt-3"
             style={{ width: 590 }}
         >
@@ -23,20 +24,7 @@ const Content = (props: Props) => {
             <Grid item lg={12}>
                 <Card>
                     <CardContent>
-                        {Array(20).fill(0).map((_, index) => (
-                            <Grid item lg={12} key={index}>
-                                <div className='flex items-center'>
-                                    <div>
-                                        <Menu />
-                                    </div>
-                                    <div>
-                                        <div>
-                                            Minh Duong
-                                        </div>
-                                    </div>
-                                </div>
-                            </Grid>
-                        ))}
+                        <TimeLines />
                     </CardContent>
                 </Card>
             </Grid>

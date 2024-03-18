@@ -1,10 +1,10 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import Loader from '../common/components/loading'
+import Loading from './loading'
 
 const Home = dynamic(() => import('./home'), {
-    loading: () => <Loader />,
+    loading: () => <Loading />,
     ssr: false
 })
 

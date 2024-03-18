@@ -1,9 +1,9 @@
 'use client'
 
-import Loader from '@/src/common/components/loading'
 import dynamic from 'next/dynamic'
+import Loading from '../loading'
 
-const LoginPage = dynamic(() => import('.'), { loading: () => <Loader />, ssr: false })
+const LoginPage = dynamic(() => import('.'), { loading: () => <Loading />, ssr: false })
 
 const Login = () => {
 

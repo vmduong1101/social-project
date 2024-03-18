@@ -7,6 +7,7 @@ export const VERIFY = gql`
     $first_name: String
     $last_name: String
     $email: String!
+    $code: String!
     )
     {
       verify(arg: {
@@ -15,6 +16,7 @@ export const VERIFY = gql`
       password: $password,
       re_password: $re_password,
       email: $email
+      code: $code
     }){
         code
         message

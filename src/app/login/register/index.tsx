@@ -6,6 +6,7 @@ import { useSnackbar } from 'notistack';
 import { Fragment, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import VerifyDialog from './dialog';
+import { atom, useRecoilState } from 'recoil';
 
 interface FormInput {
     firstName: string
@@ -20,35 +21,55 @@ type Props = {
     onToggle: () => void
 }
 
+export const secondState = atom({
+    key: 'secondState',
+    default: 1000,
+});
+
+export const codeVerifyState = atom({
+    key: 'codeVerifyState',
+    default: 1000,
+});
+
 const RegisterAccount = (props: Props) => {
     const { onToggle } = props
     const { enqueueSnackbar } = useSnackbar();
     const [registerUser, { loading }] = useMutation(REGISTER);
+    const [_millisecond, setMillisecond] = useRecoilState(secondState);
+    const [_codeVerify, setCodeVerify] = useRecoilState(codeVerifyState);
+
     const { register, handleSubmit, reset } = useForm<FormInput>()
+    const [dataSendEmail, setDataSendEmail] = useState({})
 
     const [openDialog, setOpenDialog] = useState(false);
     const [userMailData, setUserMailData] = useState({});
 
-    const onRegisterUser: SubmitHandler<FormInput> = (data) => registerUser({
-        variables: {
+    const onRegisterUser: SubmitHandler<FormInput> = (data) => {
+        const params = {
             password: data.password,
             re_password: data.rePassword,
             first_name: data.firstName,
             last_name: data.lastName,
             email: data.email
-        },
-        onCompleted(data) {
-            const message = data?.register?.message || ''
-            const variant = data?.register?.code === 200 ? 'success' : 'warning'
+        }
+        setDataSendEmail(params)
+        registerUser({
+            variables: params,
+            onCompleted(data) {
+                const message = data?.register?.message || ''
+                const variant = data?.register?.code === 200 ? 'success' : 'warning'
 
-            if (data?.register?.code === 200) {
-                setOpenDialog(true)
-                reset()
-                setUserMailData(data?.register?.data)
-            }
-            enqueueSnackbar(message, { variant })
-        },
-    })
+                if (data?.register?.code === 200) {
+                    setOpenDialog(true)
+                    reset()
+                    setMillisecond(data?.register?.data?.expires_at)
+                    setUserMailData(data?.register?.data)
+                    setCodeVerify(data?.register?.data?.code)
+                }
+                enqueueSnackbar(message, { variant })
+            },
+        })
+    }
 
     return (
         <Fragment>
@@ -149,6 +170,7 @@ const RegisterAccount = (props: Props) => {
             <VerifyDialog
                 open={openDialog}
                 data={userMailData}
+                onClosed={() => setOpenDialog(false)}
                 onSuccess={() => {
                     setOpenDialog(false)
                     onToggle()
