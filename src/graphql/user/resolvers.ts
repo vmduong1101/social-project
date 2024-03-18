@@ -5,8 +5,8 @@ import jwt from 'jsonwebtoken';
 import { isEmpty } from 'lodash';
 import { Op } from 'sequelize';
 import { checkKeyRequired } from '../../helpers/check-key-required';
-import UserModel from './model';
 import { google } from 'googleapis';
+import { RegisterModel, UserModel } from './model';
 const querystring = require('querystring');
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET || ''
@@ -245,7 +245,7 @@ const userResolvers = {
             }
         },
         verify: async (parent: void, args: any, context: any, info: GraphQLResolveInfo) => {
-            const { first_name, email, last_name, password, role = 'user' } = args.arg as TypeUser & { re_password: string }
+            const { first_name, email, last_name, password, code, role = 'user' } = args.arg as TypeUser & { re_password: string, code?:string }
             const newPassword = await bcrypt.hash(password, saltRounds)
             const full_name = Object.values({ first_name, last_name}).filter(Boolean).join(' ') || null
 
@@ -253,7 +253,7 @@ const userResolvers = {
                 const dataCheck = await UserModel.findOne({ 
                     where: { 
                         [Op.or]: {
-                            email
+                            email,
                         }
                      }
                 })
@@ -267,23 +267,33 @@ const userResolvers = {
                     }
                 }
 
-                const data = await UserModel.create({
-                    first_name,
-                    last_name,
-                    full_name,
-                    password: newPassword,
-                    email,
-                    role,
-                    account: EnumAccount.Normal
-                }) 
+                const register = await RegisterModel.findOne({ where: { email, code, expires_at: { [Op.gt]: new Date() } } })
 
-                return {
-                    code: 200,
-                    message: 'Register success',
-                    access_token: '',
-                    data: data
+                if(register) {
+                    const data = await UserModel.create({
+                        first_name,
+                        last_name,
+                        full_name,
+                        password: newPassword,
+                        email,
+                        role,
+                        account: EnumAccount.Normal
+                    }) 
+    
+                    return {
+                        code: 200,
+                        message: 'Register success',
+                        access_token: '',
+                        data: data
+                    }
+                } else {
+                    return {
+                        code: 400,
+                        message: 'Invalid code or code expired',
+                        access_token: '',
+                        data: null
+                    }
                 }
-
             } catch (error: any) {
                 return {
                     code: 400,
@@ -335,7 +345,23 @@ const userResolvers = {
 
                 oauth2Client.setCredentials({refresh_token: process.env.GG_MAIL_REFRESH_TOKEN});
                 const accessToken = await oauth2Client.getAccessToken()
+                const expiresAt = new Date(Date.now() + 60000);
 
+                const existRegister = await RegisterModel.findOne({ where: { email } })
+
+                if(existRegister) {
+                    await RegisterModel.update({
+                        code: verificationCode,
+                        expires_at: expiresAt
+                    }, { where: { email } })
+                } else {
+                    await RegisterModel.create({
+                        email,
+                        code: verificationCode,
+                        expires_at: expiresAt
+                    })
+                }
+                
                 var mail = {
                     from: `Võ Minh Đương <${process.env.GG_MAIL_MY_EMAIL}>`,
                     to: email,
@@ -382,7 +408,8 @@ const userResolvers = {
                             re_password,
                             email,
                             role,
-                            code: verificationCode
+                            code: verificationCode,
+                            expires_at: 60000
                         }
                     }   
                 } else {

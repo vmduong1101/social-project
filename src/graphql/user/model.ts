@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../../config/dbConfig';
 
-const UserModel = sequelize.define('User', {
+export const UserModel = sequelize.define('users', {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -34,10 +34,37 @@ const UserModel = sequelize.define('User', {
     },
     picture : {
       type: DataTypes.STRING
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
     }
-}, {
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
+},{
+  timestamps: false
 });
 
-export default UserModel;
+export const RegisterModel = sequelize.define('registers', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
+  code: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  expires_at: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+},{
+  timestamps: false
+});

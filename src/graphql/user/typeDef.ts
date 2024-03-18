@@ -79,6 +79,7 @@ const userTypeDefs = gql`
     email: String!
     password: String!
     re_password: String!
+    code: String
   }
 
   type OutputRegister {
@@ -95,6 +96,7 @@ const userTypeDefs = gql`
     re_password: String,
     password: String,
     code: String,
+    expires_at: String
   }
 
   type OutputVerify {
